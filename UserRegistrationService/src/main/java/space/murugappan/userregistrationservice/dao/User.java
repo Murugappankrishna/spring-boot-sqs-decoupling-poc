@@ -2,7 +2,6 @@ package space.murugappan.userregistrationservice.dao;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.boot.autoconfigure.batch.BatchTransactionManager;
 import space.murugappan.userregistrationservice.enums.RegistrationStatus;
 
 import java.util.UUID;

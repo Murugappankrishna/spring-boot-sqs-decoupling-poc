@@ -1,6 +1,6 @@
 package space.murugappan.userregistrationservice.config;
 
-import org.springframework.beans.factory.annotation.Configurable;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.regions.Region;
