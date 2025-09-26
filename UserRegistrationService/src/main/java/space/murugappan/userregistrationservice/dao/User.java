@@ -1,6 +1,7 @@
 package space.murugappan.userregistrationservice.dao;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import space.murugappan.userregistrationservice.enums.RegistrationStatus;
 
@@ -18,7 +19,11 @@ public class User {
     UUID id;
     String name;
     String password;
+    @Enumerated(EnumType.STRING)
     RegistrationStatus registrationStatus;
+    @Column(unique = true)
+    @Email(message = "Please Enter a Valid Email")
+    String email;
     public User(){
         registrationStatus = RegistrationStatus.REGISTRATION_PENDING;
     }
