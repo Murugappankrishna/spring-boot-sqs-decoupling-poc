@@ -38,5 +38,5 @@ jobs:
             -DskipTests \
             org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.organization=murugappankrishna \
-            -Dsonar.projectKey=Murugappankrishna_JAVA-SQS \
+            -Dsonar.projectKey=Murugappankrishna_spring-boot-sqs \
             -Dsonar.host.url=https://sonarcloud.io
