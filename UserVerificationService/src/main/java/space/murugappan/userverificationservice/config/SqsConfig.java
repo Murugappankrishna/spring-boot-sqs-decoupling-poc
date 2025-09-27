@@ -1,6 +1,7 @@
 package space.murugappan.userverificationservice.config;
 
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
+import io.awspring.cloud.sqs.listener.ListenerMode;
 import io.awspring.cloud.sqs.listener.acknowledgement.handler.AcknowledgementMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +26,7 @@ public class SqsConfig {
                 .configure(options->
                         options.acknowledgementMode(AcknowledgementMode.MANUAL)
                                 .pollTimeout(Duration.ofSeconds(10))
+                                .listenerMode(ListenerMode.BATCH)
                 )
                 .build();
     }
