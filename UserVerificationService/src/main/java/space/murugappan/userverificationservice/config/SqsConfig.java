@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
-
+import java.time.Duration;
 
 
 @Configuration
@@ -24,6 +24,7 @@ public class SqsConfig {
                 .sqsAsyncClient(sqsAsyncClient)
                 .configure(options->
                         options.acknowledgementMode(AcknowledgementMode.MANUAL)
+                                .pollTimeout(Duration.ofSeconds(10))
                 )
                 .build();
     }
