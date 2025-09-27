@@ -6,8 +6,10 @@ import io.awspring.cloud.sqs.annotation.SqsListener;
 import io.awspring.cloud.sqs.listener.acknowledgement.BatchAcknowledgement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.messaging.Message;
 
 import java.security.SecureRandom;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -31,19 +33,14 @@ public class UserRegistrationSqsListener {
     }
 
     @SqsListener(value = "learn_sqs.fifo", factory = "defaultSqsListenerContainerFactory")
-    public void listen(List<User> registeredUsers, BatchAcknowledgement<User> batchAcknowledgement) {
-        List<CompletableFuture<Void>> futures = registeredUsers.stream().map(user -> CompletableFuture.runAsync(() -> processUser(user))).toList();
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).whenComplete((res, err) -> {
-            if (err == null) {
-                batchAcknowledgement.acknowledgeAsync();
-            } else {
-                log.error("Batch processing failed: {}", err.getMessage(), err);
-            }
-        });
+    public void listen(List<Message<User>> registeredUsers, BatchAcknowledgement<User> batchAcknowledgement) {
+      registeredUsers.stream().map(user -> CompletableFuture.runAsync(() -> processUser(user, batchAcknowledgement)));
+
 
     }
 
-    private void processUser(User registeredUser) {
+    private void processUser(Message<User> message, BatchAcknowledgement<User> batchAcknowledgement) {
+        User registeredUser = message.getPayload();
         try {
             mailUtils.sendVerificationEmail(
                     registeredUser.getEmail(),
@@ -55,6 +52,7 @@ public class UserRegistrationSqsListener {
                     registeredUser.getId(),
                     RegistrationStatus.MAIL_SENT_PENDING
             );
+            batchAcknowledgement.acknowledgeAsync(Collections.singleton(message));
 
         } catch (Exception e) {
             log.error("Email Functionality Failed For the Mail {} with the Exception {}",
