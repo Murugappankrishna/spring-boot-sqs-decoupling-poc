@@ -39,10 +39,10 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      # 5️⃣ Build and run Sonar scan
+      # 5️⃣ Build and run Sonar scan with debug
       - name: Build and analyze multi-module project
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn -X verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
               -Dsonar.projectKey=Murugappankrishna_JAVA-SQS
