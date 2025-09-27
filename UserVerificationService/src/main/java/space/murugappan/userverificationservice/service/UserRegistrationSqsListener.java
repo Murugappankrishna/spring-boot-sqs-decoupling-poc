@@ -34,7 +34,9 @@ public class UserRegistrationSqsListener {
 
     @SqsListener(value = "learn_sqs.fifo", factory = "defaultSqsListenerContainerFactory")
     public void listen(List<Message<User>> registeredUsers, BatchAcknowledgement<User> batchAcknowledgement) {
-      registeredUsers.stream().map(user -> CompletableFuture.runAsync(() -> processUser(user, batchAcknowledgement)));
+        registeredUsers.forEach(user -> CompletableFuture.runAsync(() -> processUser(user, batchAcknowledgement))
+
+        );
 
 
     }
@@ -42,22 +44,13 @@ public class UserRegistrationSqsListener {
     private void processUser(Message<User> message, BatchAcknowledgement<User> batchAcknowledgement) {
         User registeredUser = message.getPayload();
         try {
-            mailUtils.sendVerificationEmail(
-                    registeredUser.getEmail(),
-                    registeredUser.getName(),
-                    String.format("%06d", random.nextInt(1000000))
-            );
+            mailUtils.sendVerificationEmail(registeredUser.getEmail(), registeredUser.getName(), String.format("%06d", random.nextInt(1000000)));
 
-            userRepo.updateRegistrationStatus(
-                    registeredUser.getId(),
-                    RegistrationStatus.MAIL_SENT_PENDING
-            );
+            userRepo.updateRegistrationStatus(registeredUser.getId(), RegistrationStatus.MAIL_SENT_PENDING);
             batchAcknowledgement.acknowledgeAsync(Collections.singleton(message));
 
         } catch (Exception e) {
-            log.error("Email Functionality Failed For the Mail {} with the Exception {}",
-                    registeredUser.getEmail(),
-                    e.getMessage());
+            log.error("Email Functionality Failed For the Mail {} with the Exception {}", registeredUser.getEmail(), e.getMessage());
         }
 
     }
