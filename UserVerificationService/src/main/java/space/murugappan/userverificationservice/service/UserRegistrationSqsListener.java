@@ -27,7 +27,7 @@ public class UserRegistrationSqsListener {
     private static final SecureRandom random = new SecureRandom();
 
 
-    private UserRegistrationSqsListener(MailUtils mailUtils, UserRepo userRepo) {
+    UserRegistrationSqsListener(MailUtils mailUtils, UserRepo userRepo) {
         this.mailUtils = mailUtils;
         this.userRepo = userRepo;
     }

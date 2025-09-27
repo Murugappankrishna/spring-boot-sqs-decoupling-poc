@@ -11,16 +11,16 @@ import java.util.concurrent.CompletableFuture;
 public class UserService {
     private final UserRepo userRepo;
     private final SQSUtills sqsUtills;
-    final String SqsUserMailQueue = "learn_sqs.fifo";
-    UserService(UserRepo userRepo,SQSUtills sqsUtills){
-        this.sqsUtills= sqsUtills;
-        this.userRepo=userRepo;
+    private static final String sqsUserMailQueue = "learn_sqs.fifo";
+
+    UserService(UserRepo userRepo, SQSUtills sqsUtills) {
+        this.sqsUtills = sqsUtills;
+        this.userRepo = userRepo;
     }
-    public  User registerUser(User user){
+
+    public User registerUser(User user) {
         User savedUser = userRepo.save(user);
-        CompletableFuture<Void> voidCompletableFuture = CompletableFuture.runAsync(()-> {
-            sqsUtills.putMessage(user,SqsUserMailQueue);
-        });
+        CompletableFuture.runAsync(() -> sqsUtills.putMessage(user, sqsUserMailQueue));
         return savedUser;
     }
 }

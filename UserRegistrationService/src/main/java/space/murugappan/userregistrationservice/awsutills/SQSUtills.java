@@ -2,6 +2,7 @@ package space.murugappan.userregistrationservice.awsutills;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.core.exception.SdkServiceException;
@@ -11,6 +12,7 @@ import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
 import space.murugappan.userregistrationservice.dao.User;
 
 @Component
+@Slf4j
 public class SQSUtills {
     private final SqsClient sqsClient;
     private final ObjectMapper objectMapper;
@@ -34,12 +36,12 @@ public class SQSUtills {
                     .build();
             sqsClient.sendMessage(sendMsgRequest);
         } catch (JsonProcessingException jsonProcessingException) {
-            System.out.println("Failed in JSON Parsing" + jsonProcessingException);
+            log.error("Failed in JSON Parsing{}", String.valueOf(jsonProcessingException));
 
         } catch (SdkServiceException sdkServiceException) {
-            System.err.println("AWS service error: " + sdkServiceException.getMessage());
+            log.error("AWS service error: {}", sdkServiceException.getMessage());
         } catch (SdkClientException sdkClientException) {
-            System.err.println("AWS client error (network/credentials): " + sdkClientException.getMessage());
+            log.error("AWS client error (network/credentials): {}", sdkClientException.getMessage());
         }
     }
 }
