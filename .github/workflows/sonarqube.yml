@@ -1,17 +1,19 @@
-name: SonarCloud Scan
-
+name: SonarQube
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
     types: [opened, synchronize, reopened]
 
 jobs:
   build:
+    name: Build and analyze
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -28,16 +30,13 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Build project (skip tests)
-        run: mvn -B verify -DskipTests
-
       - name: Run SonarCloud scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn -B verify \
+            -DskipTests \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.organization=murugappankrishna \
             -Dsonar.projectKey=Murugappankrishna_JAVA-SQS \
-            -Dsonar.host.url=https://sonarcloud.io \
-            -Dsonar.modules=UserRegistrationService,UserVerificationService \
-            -Dsonar.skipTests=true
+            -Dsonar.host.url=https://sonarcloud.io
