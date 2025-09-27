@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 public class UserService {
     private final UserRepo userRepo;
     private final SQSUtills sqsUtills;
-    private static final String sqsUserMailQueue = "learn_sqs.fifo";
+    private static final String SQS_USER_MAIL_QUEUE = "learn_sqs.fifo";
 
     UserService(UserRepo userRepo, SQSUtills sqsUtills) {
         this.sqsUtills = sqsUtills;
@@ -20,7 +20,7 @@ public class UserService {
 
     public User registerUser(User user) {
         User savedUser = userRepo.save(user);
-        CompletableFuture.runAsync(() -> sqsUtills.putMessage(user, sqsUserMailQueue));
+        CompletableFuture.runAsync(() -> sqsUtills.putMessage(user, SQS_USER_MAIL_QUEUE));
         return savedUser;
     }
 }

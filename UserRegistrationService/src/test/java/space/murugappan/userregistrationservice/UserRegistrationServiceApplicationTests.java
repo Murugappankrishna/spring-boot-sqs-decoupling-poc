@@ -10,6 +10,7 @@ class UserRegistrationServiceApplicationTests {
     void contextLoads() {
         // This test is intentionally empty.
         // Its purpose is to verify that the Spring application context loads without errors.
+        throw new UnsupportedOperationException("Tests Yet To Be Implemented");
     }
 
 }
